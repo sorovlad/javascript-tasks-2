@@ -7,6 +7,9 @@ var phoneBook = []; // Здесь вы храните записи как хот
    На вход может прийти что угодно, будьте осторожны.
 */
 module.exports.add = function add(name, phone, email) {
+    if (name == undefined || phone == undefined || email == undefined) {
+        return false;
+    }
     var entry = new EntryPhoneBook(name, phone, email);
 
     if (entry.isCorrect()) {
@@ -44,10 +47,12 @@ module.exports.remove = function remove(query) {
 */
 module.exports.importFromCsv = function importFromCsv(filename) {
     var data = require('fs').readFileSync(filename, 'utf-8');
-
-    // Ваша чёрная магия:
-    // - Разбираете записи из `data`
-    // - Добавляете каждую запись в книгу
+    var entry;
+    data = data.split('\n');
+    for (var lineEntry of data) {
+        entry = lineEntry.split(';');
+        module.exports.add(entry[0], entry[1], entry[2]);
+    }
 };
 
 /*
@@ -56,15 +61,15 @@ module.exports.importFromCsv = function importFromCsv(filename) {
 module.exports.showTable = function showTable(query) {
     var entrys = getListEntry(query);
 
-    var head = '╔════════════╦═══════════════════╦═════════════════════╗\n' +
-               '║   Имя      ║  Телефон          ║    Email            ║\n' +
-               '╟════════════╬═══════════════════╬═════════════════════╣\n';
+    var head = '╔════════════╦═══════════════════╦═══════════════════════╗\n' +
+               '║   Имя      ║  Телефон          ║    Email              ║\n' +
+               '╟════════════╬═══════════════════╬═══════════════════════╣\n';
     var body = '';
-    var footer = '╚════════════╩═══════════════════╩═════════════════════╝';
+    var footer = '╚════════════╩═══════════════════╩═══════════════════════╝';
     for (var entry of entrys) {
         body += '║' + entry.name + multiplySting(' ', 12 - entry.name.length) + '║' +
             entry.phone + multiplySting(' ', 19 - entry.phone.length) + '║' +
-            entry.email + multiplySting(' ', 21 - entry.email.length) + '║\n';
+            entry.email + multiplySting(' ', 23 - entry.email.length) + '║\n';
     }
 
     console.log( head + body + footer);
