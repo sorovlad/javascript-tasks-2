@@ -6,8 +6,8 @@ var phoneBook = require('./phone-book');
 phoneBook.add('Сергей', '7 999 6667778', 'gs@example.com');
 phoneBook.add('Сергей 2', '999 4433444', 'gs@example.com');
 phoneBook.add('Олег', '+7 (999) 777-7-777', 'just7@yandex-team.ru');
-phoneBook.add('Игорь', '+7 111 722-2-552' , 'just7@yandex-team.ru');
-phoneBook.add('Игорь', '+7 111 722 2 552' , 'just7@yandex-team.ru');
+phoneBook.add('Игорь', '+7 111 722-2-552', 'just7@yandex-team.ru');
+phoneBook.add('Игорь', '+7 111 722 2 552', 'just7@yandex-team.ru');
 phoneBook.add('Вася', '71117772222', 'coor@ect.email');
 // Невалидные данные не должны попадать в книгу!
 phoneBook.add('Честный Хрюндель', 'invalid phone', 'honest-hrundel');
