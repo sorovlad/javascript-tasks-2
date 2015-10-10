@@ -29,15 +29,15 @@ phoneBook.add('Не корректный телефон', '-7 (256) 777-2-222', 
 
 
 
-//phoneBook.find('777');
+phoneBook.find('777');
 phoneBook.find('');
 // Выводит построчно записи, все поля через запятую:
 // Сергей, +7 (999) 666-7-778, gogolef@yandex-team.ru
 // Олег, +7 (999) 777-7-777, just7@yandex-team.ru
 
 phoneBook.remove('Олег');
-phoneBook.remove('Вася');
-phoneBook.find('');
+phoneBook.remove('99');
+phoneBook.find();
 
 // Выводит количество удалённых контактов, которые удовлетворят запросу:
 // Удален 1 контакт
@@ -54,5 +54,6 @@ phoneBook.showTable();
 
 
 // Экспортируем записи, пример файла рядом
-//phoneBook.export('./backup.csv');
+phoneBook.importFromCsv('./backup.csv');
 // Добавлено 4 контакта
+phoneBook.showTable();
