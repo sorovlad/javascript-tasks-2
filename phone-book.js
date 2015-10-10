@@ -34,9 +34,9 @@ module.exports.find = function find(query) {
 module.exports.remove = function remove(query) {
     var listEntry = getListEntry(query);
 
-    phoneBook = phoneBook.filter(function(i) {
-        return  listEntry.indexOf(i) == -1;
-        });
+    phoneBook = phoneBook.filter(function (i) {
+        return listEntry.indexOf(i) == -1;
+    });
 
     console.log('Удален ' + listEntry.length + ' контакт.');
 
@@ -72,7 +72,7 @@ module.exports.showTable = function showTable(query) {
             entry.email + multiplySting(' ', 23 - entry.email.length) + '║\n';
     }
 
-    console.log( head + body + footer);
+    console.log(head + body + footer);
 
 };
 
@@ -82,23 +82,23 @@ function EntryPhoneBook(name, phone, email) {
     this.phone = convectPhone(phone);
     this.email = isCorrectEmail(email) ? email : null;
 
-    this.isCorrect = function() {
-      if( this.name === null || this.phone === null || this.email === null ) {
-          return false;
-      }
-      return true;
-    }
+    this.isCorrect = function () {
+        if (this.name === null || this.phone === null || this.email === null) {
+            return false;
+        }
+        return true;
+    };
 }
 
 function writeEntryInPhoneBook(number) {
-    console.log(phoneBook[number].name + ', ' + phoneBook[number].phone + ', ' + phoneBook[number ].email);
+    console.log(phoneBook[number].name + ', ' +
+        phoneBook[number].phone + ', ' + phoneBook[number].email);
 }
 
 function writeEntrys(entrys) {
     for (var i in entrys) {
         console.log(entrys[i].name + ', ' + entrys[i].phone + ', ' + entrys[i].email);
     }
-//    console.log(phoneBook[number].name + ', ' + phoneBook[number].phone + ', ' + phoneBook[number ].email);
 }
 
 
@@ -119,7 +119,7 @@ function getListEntry(found) {
 
 function isCorrectName(name) {
     if (name.length < 2) {
-      return false;
+        return false;
     }
     return true;
 }
@@ -129,26 +129,27 @@ function convectPhone(phone) {
 
     var result = phone.match(re);
     if (result) {
-        if ( !(result[9] == '-' ^ result[9] == ' ' ^ result[9] == '') ) {
+        if (!(result[9] == '-' ^ result[9] == ' ' ^ result[9] == '')) {
             return null;
         }
-        if ( !(result[7] == '-' ^ result[7] == ' ' ^ result[7] == '') ) {
+        if (!(result[7] == '-' ^ result[7] == ' ' ^ result[7] == '')) {
             return null;
         }
-        if ( !(result[5] == ' ' ^ ( result[5] == ') ' && result[3] == ' (' ) ^ result[5] == '')) {
+        if (!(result[5] == ' ' ^ (result[5] == ') ' && result[3] == ' (') ^ result[5] == '')) {
             return null;
         }
-        if ( !(result[3] == ' ' ^ ( result[5] == ') ' && result[3] == ' (' ) ^ result[3] == '')) {
+        if (!(result[3] == ' ' ^ (result[5] == ') ' && result[3] == ' (') ^ result[3] == '')) {
             return null;
         }
-        if ( !(result[1] == ' ' ^ result[1] == '+' ^ result[1] == '')) {
+        if (!(result[1] == ' ' ^ result[1] == '+' ^ result[1] == '')) {
             return null;
         }
-        if( result[2] == '' ) {
-          result[2] = 7;
+        if (result[2] == '') {
+            result[2] = 7;
         }
 
-        phoneInConvert += '+' + result[2] + ' (' + result [4] + ') ' + result[6] + '-' + result[8] + '-' + result[10];
+        phoneInConvert += '+' + result[2] +
+            ' (' + result [4] + ') ' + result[6] + '-' + result[8] + '-' + result[10];
         return phoneInConvert;
     }
     return null;
@@ -175,7 +176,7 @@ function isCorrectEmail(email) {
 }
 
 function multiplySting(str, mul) {
-    var newStr = "";
+    var newStr = '';
 
     for (var i = 0; i < mul; i += 1) {
         newStr += str;
