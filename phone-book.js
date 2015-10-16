@@ -7,13 +7,13 @@ var phoneBook = []; // Здесь вы храните записи как хот
    На вход может прийти что угодно, будьте осторожны.
 */
 module.exports.add = function add(name, phone, email) {
-    if (name == undefined || phone == undefined || email == undefined) {
-        return false;
-    }
     var entry = new EntryPhoneBook(name, phone, email);
 
     if (entry.isCorrect()) {
         phoneBook.push(entry);
+        return true;
+    } else {
+        return false;
     }
 };
 
@@ -25,21 +25,19 @@ module.exports.find = function find(query) {
     var listEntry = getListEntry(query);
 
     writeEntrys(listEntry);
-
 };
 
 /*
    Функция удаления записи в телефонной книге.
 */
 module.exports.remove = function remove(query) {
-    var listEntry = getListEntry(query);
+    var oldLength = phoneBook.length;
 
     phoneBook = phoneBook.filter(function (i) {
-        return listEntry.indexOf(i) == -1;
+        return !isElementInEntry(i, query);
     });
 
-    console.log('Удален ' + listEntry.length + ' контакт.');
-
+    console.log('Удален ' + (oldLength - phoneBook.length) + ' контакт.');
 };
 
 /*
@@ -61,19 +59,18 @@ module.exports.importFromCsv = function importFromCsv(filename) {
 module.exports.showTable = function showTable(query) {
     var entrys = getListEntry(query);
 
-    var head = '╔════════════╦═══════════════════╦═══════════════════════╗\n' +
+    var headAsciiTable = '╔════════════╦═══════════════════╦═══════════════════════╗\n' +
                '║   Имя      ║  Телефон          ║    Email              ║\n' +
                '╟════════════╬═══════════════════╬═══════════════════════╣\n';
-    var body = '';
-    var footer = '╚════════════╩═══════════════════╩═══════════════════════╝';
+    var bodyAsciiTable = '';
+    var footerAsciiTable = '╚════════════╩═══════════════════╩═══════════════════════╝';
     for (var entry of entrys) {
-        body += '║' + entry.name + multiplySting(' ', 12 - entry.name.length) + '║' +
+        bodyAsciiTable += '║' + entry.name + multiplySting(' ', 12 - entry.name.length) + '║' +
             entry.phone + multiplySting(' ', 19 - entry.phone.length) + '║' +
             entry.email + multiplySting(' ', 23 - entry.email.length) + '║\n';
     }
 
-    console.log(head + body + footer);
-
+    console.log(headAsciiTable + bodyAsciiTable + footerAsciiTable);
 };
 
 
@@ -90,42 +87,41 @@ function EntryPhoneBook(name, phone, email) {
     };
 }
 
-function writeEntryInPhoneBook(number) {
-    console.log(phoneBook[number].name + ', ' +
-        phoneBook[number].phone + ', ' + phoneBook[number].email);
-}
-
 function writeEntrys(entrys) {
-    for (var i in entrys) {
+    for (var i = 0; i < entrys.length; i ++) {
         console.log(entrys[i].name + ', ' + entrys[i].phone + ', ' + entrys[i].email);
     }
 }
 
 
 function getListEntry(found) {
-    found = found === undefined ? '' : found;
+    found = found || '';
     var entrysFound = [];
     for (var entry of phoneBook) {
-        if (
-            entry.name.indexOf(found) != -1 ||
-            entry.phone.indexOf(found) != -1 ||
-            entry.email.indexOf(found) != -1) {
+        if (isElementInEntry(entry, found)) {
             entrysFound.push(entry);
         }
     }
     return entrysFound;
 }
 
+function isElementInEntry(entry, found) {
+    return entry.name.indexOf(found) != -1 ||
+        entry.phone.indexOf(found) != -1 ||
+        entry.email.indexOf(found) != -1;
+}
+
+
 
 function isCorrectName(name) {
-    if (name.length < 2) {
-        return false;
-    }
-    return true;
+    return typeof name === 'string' && name.length > 1;
 }
 function convectPhone(phone) {
-    var phoneInConvert = '';
-    var re = /(\+{0,1})(\d{0,3})(.*)(\d{3})(.*)(\d{3})(.*)(\d{1})(.*)(\d{3})/;
+    if (typeof phone === 'undefined') {
+        return null;
+    }
+
+    var re = /(\+?)(\d{0,3})(.*)(\d{3})(.*)(\d{3})(.*)(\d{1})(.*)(\d{3})$/;
 
     var result = phone.match(re);
     if (result) {
@@ -148,19 +144,22 @@ function convectPhone(phone) {
             result[2] = 7;
         }
 
-        phoneInConvert += '+' + result[2] +
-            ' (' + result [4] + ') ' + result[6] + '-' + result[8] + '-' + result[10];
-        return phoneInConvert;
+        return '+' + result[2] + ' (' + result [4] + ') ' +
+            result[6] + '-' + result[8] + '-' + result[10];
     }
     return null;
 }
 function isCorrectEmail(email) {
     var count = 0;
 
-    for (var i in email) {
+    if (typeof email !== 'string') {
+        return false;
+    }
+
+    for (var i = 0; i < email.length; i ++) {
         if (email[i] == '@') {
             count ++;
-            if (count == 2) {
+            if (count === 2) {
                 return false;
             }
         }
