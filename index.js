@@ -11,23 +11,6 @@ phoneBook.add('Игорь', '+7 111 722 2 552', 'just7@yandex-team.ru');
 phoneBook.add('Вася', '71117772222', 'coor@ect.email');
 // Невалидные данные не должны попадать в книгу!
 phoneBook.add('Честный Хрюндель', 'invalid phone', 'honest-hrundel');
-phoneBook.add('Не корректный емайл', '71117772222', 'honest-hrundel');
-phoneBook.add('Не корректный емайл', '71117772222', 'info@yandex');
-phoneBook.add('Не корректный емайл', '71117772222', 'info@yandex@ya.ru');
-phoneBook.add('Не корректный емайл', '71117772222', 'info.yandex.ru');
-phoneBook.add('Не корректный емайл', '71117772222', 'yandex');
-phoneBook.add('Не корректный емайл', '71117772222', '@.');
-phoneBook.add('Не корректный емайл', '71117772222', '@yandex.ru');
-
-phoneBook.add('Не корректный телефон', '777-2-222', 'just7@yandex-team.ru');
-phoneBook.add('Не корректный телефон', 'АБС-6666', 'just7@yandex-team.ru');
-phoneBook.add('Не корректный телефон', '+7 (123) 777%2%222', 'just7@yandex-team.ru');
-phoneBook.add('Не корректный телефон', '+7 (234 777-2-222', 'just7@yandex-team.ru');
-phoneBook.add('Не корректный телефон', '7+ (245) 777-2-222', 'just7@yandex-team.ru');
-phoneBook.add('Не корректный телефон', '-7 (256) 777-2-222', 'just7@yandex-team.ru');
-//phoneBook.add('Не корректный телефон', '', 'just7@yandex-team.ru');
-
-
 
 phoneBook.find('777');
 phoneBook.find('');
