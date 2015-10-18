@@ -37,18 +37,17 @@ module.exports.remove = function remove(query) {
         return !isElementInEntry(i, query);
     });
 
-    console.log('Удален ' + (oldLength - phoneBook.length) + ' контакт.');
+    return oldLength - phoneBook.length;
 };
 
 /*
    Функция импорта записей из файла (задача со звёздочкой!).
 */
 module.exports.importFromCsv = function importFromCsv(filename) {
-    var data = require('fs').readFileSync(filename, 'utf-8');
-    var entry;
-    data = data.split('\n');
+    var data = require('fs').readFileSync(filename, 'utf-8').split('\n');
+
     for (var lineEntry of data) {
-        entry = lineEntry.split(';');
+        var entry = lineEntry.split(';');
         module.exports.add(entry[0], entry[1], entry[2]);
     }
 };
@@ -59,15 +58,30 @@ module.exports.importFromCsv = function importFromCsv(filename) {
 module.exports.showTable = function showTable(query) {
     var entrys = getListEntry(query);
 
-    var headAsciiTable = '╔════════════╦═══════════════════╦═══════════════════════╗\n' +
-               '║   Имя      ║  Телефон          ║    Email              ║\n' +
-               '╟════════════╬═══════════════════╬═══════════════════════╣\n';
+    var maxLength = phoneBook.reduce(function (maxLength, item) {
+        maxLength.name = item.name.length > maxLength.name ? item.name.length : maxLength.name;
+        maxLength.phone = item.phone.length > maxLength.phone ? item.phone.length : maxLength.phone;
+        maxLength.email = item.email.length > maxLength.email ? item.email.length : maxLength.email;
+        return maxLength;
+    }, {name: 6, phone: 8, email: 6});
+
+    var headAsciiTable = '╔' + multiplySting('═', maxLength.name) +
+        '╦' + multiplySting('═', maxLength.phone) + '╦' +
+        multiplySting('═', maxLength.email) + '╗\n' +
+        '║ Имя' + multiplySting(' ', maxLength.name - 4) + '║ Телефон' +
+        multiplySting(' ', maxLength.phone - 8) + '║ Email' +
+        multiplySting(' ', maxLength.email - 6) + '║\n' +
+        '╟' + multiplySting('═', maxLength.name) +
+        '╬' + multiplySting('═', maxLength.phone) + '╬' +
+        multiplySting('═', maxLength.email) + '╬\n';
     var bodyAsciiTable = '';
-    var footerAsciiTable = '╚════════════╩═══════════════════╩═══════════════════════╝';
+    var footerAsciiTable = '╚' + multiplySting('═', maxLength.name) + '╩' +
+    multiplySting('═', maxLength.phone) + '╩' + multiplySting('═', maxLength.email) + '╝';
     for (var entry of entrys) {
-        bodyAsciiTable += '║' + entry.name + multiplySting(' ', 12 - entry.name.length) + '║' +
-            entry.phone + multiplySting(' ', 19 - entry.phone.length) + '║' +
-            entry.email + multiplySting(' ', 23 - entry.email.length) + '║\n';
+        bodyAsciiTable += '║' + entry.name +
+            multiplySting(' ', maxLength.name - entry.name.length) +
+            '║' + entry.phone + multiplySting(' ', maxLength.phone - entry.phone.length) + '║' +
+            entry.email + multiplySting(' ', maxLength.email - entry.email.length) + '║\n';
     }
 
     console.log(headAsciiTable + bodyAsciiTable + footerAsciiTable);
@@ -106,9 +120,9 @@ function getListEntry(found) {
 }
 
 function isElementInEntry(entry, found) {
-    return entry.name.indexOf(found) != -1 ||
-        entry.phone.indexOf(found) != -1 ||
-        entry.email.indexOf(found) != -1;
+    return entry.name.indexOf(found) !== -1 ||
+        entry.phone.indexOf(found) !== -1 ||
+        entry.email.indexOf(found) !== -1;
 }
 
 
@@ -124,30 +138,30 @@ function convectPhone(phone) {
     var re = /(\+?)(\d{0,3})(.*)(\d{3})(.*)(\d{3})(.*)(\d{1})(.*)(\d{3})$/;
 
     var result = phone.match(re);
-    if (result) {
-        if (!(result[9] == '-' ^ result[9] == ' ' ^ result[9] == '')) {
-            return null;
-        }
-        if (!(result[7] == '-' ^ result[7] == ' ' ^ result[7] == '')) {
-            return null;
-        }
-        if (!(result[5] == ' ' ^ (result[5] == ') ' && result[3] == ' (') ^ result[5] == '')) {
-            return null;
-        }
-        if (!(result[3] == ' ' ^ (result[5] == ') ' && result[3] == ' (') ^ result[3] == '')) {
-            return null;
-        }
-        if (!(result[1] == ' ' ^ result[1] == '+' ^ result[1] == '')) {
-            return null;
-        }
-        if (result[2] == '') {
-            result[2] = 7;
-        }
-
-        return '+' + result[2] + ' (' + result [4] + ') ' +
-            result[6] + '-' + result[8] + '-' + result[10];
+    if (!result) {
+        return null;
     }
-    return null;
+    if (!(result[9] == '-' ^ result[9] == ' ' ^ result[9] == '')) {
+        return null;
+    }
+    if (!(result[7] == '-' ^ result[7] == ' ' ^ result[7] == '')) {
+        return null;
+    }
+    if (!(result[5] == ' ' ^ (result[5] == ') ' && result[3] == ' (') ^ result[5] == '')) {
+        return null;
+    }
+    if (!(result[3] == ' ' ^ (result[5] == ') ' && result[3] == ' (') ^ result[3] == '')) {
+        return null;
+    }
+    if (!(result[1] == ' ' ^ result[1] == '+' ^ result[1] == '')) {
+        return null;
+    }
+    if (result[2] == '') {
+        result[2] = 7;
+    }
+
+    return '+' + result[2] + ' (' + result [4] + ') ' +
+         result[6] + '-' + result[8] + '-' + result[10];
 }
 function isCorrectEmail(email) {
     var count = 0;
